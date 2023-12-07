@@ -6,6 +6,8 @@ import com.example.utils.MonitorUtils;
 import com.example.utils.NetUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +20,7 @@ import java.util.Scanner;
 
 @Slf4j
 @Configuration
-public class ServerConfiguration {
+public class ServerConfiguration implements ApplicationRunner {
 
     @Resource
     NetUtils net;
@@ -32,8 +34,13 @@ public class ServerConfiguration {
         ConnectionConfig config = this.readConfigurationFromFile();
         if(config == null)
             config = this.registerToServer();
-        System.out.println(monitor.monitorBaseDetail());
         return config;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) {
+        log.info("正在向服务端更新基本系统信息...");
+        net.updateBaseDetails(monitor.monitorBaseDetail());
     }
 
     private ConnectionConfig registerToServer() {
