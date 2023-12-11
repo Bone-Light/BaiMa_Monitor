@@ -4,6 +4,10 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
 spring:
+  influx:
+    url: http://localhost:8086
+    user: admin
+    password: 12345678
   mail:
     host: smtp.163.com
     username: javastudy111@163.com
