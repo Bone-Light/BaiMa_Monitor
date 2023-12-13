@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.entity.RestBean;
 import com.example.entity.vo.request.ChangePasswordVO;
 import com.example.entity.vo.request.CreateSubAccountVO;
+import com.example.entity.vo.request.ModifyEmailVO;
 import com.example.entity.vo.response.SubAccountVO;
 import com.example.service.AccountService;
 import com.example.utils.Const;
@@ -24,6 +25,17 @@ public class UserController {
                                          @RequestAttribute(Const.ATTR_USER_ID) int userId) {
         return service.changePassword(userId, vo.getPassword(), vo.getNew_password()) ?
                 RestBean.success() : RestBean.failure(401, "原密码输入错误！");
+    }
+
+    @PostMapping("/modify-email")
+    public RestBean<Void> modifyEmail(@RequestAttribute(Const.ATTR_USER_ID) int id,
+                                      @RequestBody @Valid ModifyEmailVO vo) {
+        String result = service.modifyEmail(id, vo);
+        if(result == null) {
+            return RestBean.success();
+        } else {
+            return RestBean.failure(401, result);
+        }
     }
 
     @PostMapping("/sub/create")
