@@ -101,7 +101,8 @@ const terminal = reactive({
                style="width: 600px;margin: 10px auto" size="320" @open="refreshToken">
       <register-card :token="register.token"/>
     </el-drawer>
-    <el-drawer style="width: 800px" :size="500" direction="btt"
+    <el-drawer style="width: 800px" :size="520" direction="btt"
+               @close="terminal.id = -1"
                v-model="terminal.show" :close-on-click-modal="false">
       <template #header>
         <div>
@@ -117,6 +118,10 @@ const terminal = reactive({
 </template>
 
 <style scoped>
+:deep(.el-drawer__header) {
+  margin-bottom: 10px;
+}
+
 :deep(.el-checkbox-group .el-checkbox) {
   margin-right: 10px;
 }

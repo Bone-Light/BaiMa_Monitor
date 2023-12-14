@@ -2,6 +2,7 @@
 import {reactive, ref, watch} from "vue";
 import {get, post} from "@/net";
 import {ElMessage} from "element-plus";
+import Terminal from "@/component/Terminal.vue";
 
 const props = defineProps({
   id: Number
@@ -26,6 +27,7 @@ const rules = {
   ]
 }
 
+const state = ref(1)
 const formRef = ref()
 
 function saveConnection() {
@@ -34,14 +36,13 @@ function saveConnection() {
       post('/api/monitor/ssh-save', {
         ...connection,
         id: props.id
-      }, () => {
-        ElMessage.success('正在连接')
-      })
+      }, () => state.value = 2)
     }
   })
 }
 
 watch(() => props.id, id => {
+  state.value = 1
   if(id !== -1) {
     connection.ip = ''
     get(`/api/monitor/ssh?clientId=${id}`, data => Object.assign(connection, data))
@@ -51,7 +52,7 @@ watch(() => props.id, id => {
 
 <template>
   <div class="terminal-main">
-    <div class="login" v-loading="!connection.ip">
+    <div class="login" v-loading="!connection.ip" v-if="state === 1">
       <i style="font-size: 50px" class="fa-solid fa-terminal"></i>
       <div style="margin-top: 10px;font-weight: bold;font-size: 20px">服务端连接信息</div>
       <el-form style="width: 400px;margin: 20px auto" :model="connection"
@@ -72,6 +73,11 @@ watch(() => props.id, id => {
         </el-form-item>
         <el-button type="success" @click="saveConnection" plain>立即连接</el-button>
       </el-form>
+    </div>
+    <div v-if="state === 2">
+      <div style="overflow: hidden;padding: 0 10px 10px 10px">
+        <terminal :id="id" @dispose="state = 1"/>
+      </div>
     </div>
   </div>
 </template>
